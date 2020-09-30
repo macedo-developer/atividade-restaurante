@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -6,8 +5,8 @@ import { Button, Card, TextInput } from "react-native-paper";
 
 export default class App extends React.Component {
   state = {
-    consumoTotal: "0",
-    couvert: "0",
+    consumoTotal: null,
+    couvert: null,
     divisao: 1,
     taxaServico: 0,
     contaTotal: 0,
@@ -15,6 +14,20 @@ export default class App extends React.Component {
   };
 
   handleCalc = () => {
+    if (
+      this.state.consumoTotal === null ||
+      this.state.consumoTotal === "" ||
+      this.state.couvert === null ||
+      this.state.couvert === "" ||
+      this.state.divisao < 1 ||
+      this.state.divisao === "" ||
+      isNaN(this.state.divisao)
+    ) {
+      return alert("Insira os valores corretamente!");
+    }
+
+    console.log(this.state.consumoTotal);
+
     const taxa = (this.state.consumoTotal * 10) / 100;
 
     const total = this.state.consumoTotal + this.state.couvert + taxa;
@@ -34,38 +47,33 @@ export default class App extends React.Component {
         <Text style={styles.title}> Restaurante Balaio de Lenha</Text>
         <View style={styles.form}>
           <TextInput
+            keyboardType="numeric"
             label="Consumo Total"
             style={styles.input}
-            value={this.state.consumoTotal}
             onChangeText={(valor) =>
               this.setState({
-                consumoTotal: parseFloat(
-                  valor.replace(",", ".").replace(/[^0-9]/g, "")
-                ),
+                consumoTotal: parseFloat(valor),
               })
             }
           />
           <TextInput
+            keyboardType="numeric"
             label="Couvert Artístico"
             style={styles.input}
-            value={this.state.couvert}
             onChangeText={(valor) =>
               this.setState({
-                couvert: parseFloat(
-                  valor.replace(",", ".").replace(/[^0-9]/g, "")
-                ),
+                couvert: parseFloat(valor),
               })
             }
           />
           <TextInput
+            mode="flat"
+            keyboardType="numeric"
             label="Dividir por Pessoa"
             style={styles.input}
-            value={this.state.divisao}
             onChangeText={(valor) =>
               this.setState({
-                divisao: parseFloat(
-                  valor.replace(",", ".").replace(/[^0-9]/g, "")
-                ),
+                divisao: parseInt(valor.replace(/[^0-9]/g, "")),
               })
             }
           />
@@ -75,33 +83,20 @@ export default class App extends React.Component {
             color="#7b0000"
             onPress={this.handleCalc}
           >
-            Calcular conta final
+            <Text>Calcular conta final</Text>
           </Button>
         </View>
         <View style={styles.viewResult}>
           <Text style={styles.results}>
-            Taxa de Serviço ..........{" "}
-            {Intl.NumberFormat("pt-br", {
-              style: "currency",
-              currency: "BRL",
-            }).format(this.state.taxaServico)}
+            Taxa de Serviço ..................... R$ {this.state.taxaServico}
           </Text>
           <Text style={styles.results}>
-            Conta Total ..................{" "}
-            {Intl.NumberFormat("pt-br", {
-              style: "currency",
-              currency: "BRL",
-            }).format(this.state.contaTotal)}
+            Conta Total ............................ R$ {this.state.contaTotal}
           </Text>
           <Text style={styles.results}>
-            Valor por Pessoa .......{" "}
-            {Intl.NumberFormat("pt-br", {
-              style: "currency",
-              currency: "BRL",
-            }).format(this.state.valorDivisao)}
+            Valor por Pessoa .................. R$ {this.state.valorDivisao}
           </Text>
         </View>
-        <StatusBar style="auto" />
       </View>
     );
   }
@@ -111,7 +106,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f76300",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#f7f7f7",
+    marginBottom: 30,
+  },
+  form: {
+    display: "flex",
+    alignContent: "center",
+    justifyContent: "center",
+    padding: 8,
+  },
+  input: {
+    width: 280,
+    marginVertical: 8,
+    color: "#7b0000",
+  },
+  buttonResult: {
+    height: 50,
+    display: "flex",
+    justifyContent: "center",
+  },
+  viewResult: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
+  },
+  results: {
+    fontSize: 18,
+    lineHeight: 28,
+    color: "#f7f7f7",
   },
 });
