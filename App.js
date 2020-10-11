@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { Button, Card, TextInput } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 
 export default class App extends React.Component {
   state = {
